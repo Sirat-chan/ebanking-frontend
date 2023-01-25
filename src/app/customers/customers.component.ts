@@ -31,6 +31,24 @@ export class CustomersComponent implements OnInit {
   }
 
   handleSearchCustomers() {
+    let kw=this.searchFormGroup?.value.keyword;
+    this.customers = this.customerService.searchCustomers(kw).pipe(
+      catchError(err => {
+        this.errorMessage=err.message;
+        return throwError(err);
+      })
+    )
+  }
+
+  handleDeleteCustomer(c: Customer) {
+    this.customerService.deleteCustomer(c.id).subscribe({
+      next: (resp)=>{
+        this.handleSearchCustomers();
+      },
+      error : err => {
+        console.log(err);
+      }
+    })
 
   }
 }
